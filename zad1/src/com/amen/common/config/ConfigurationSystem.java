@@ -53,7 +53,7 @@ public class ConfigurationSystem {
             System.out.println("OS type is Windows...");
             operatingSystemType = OS_TYPE.Windows;
         } else {
-            System.out.println("OS type is Linux... -ish... [POSIX]");
+            System.out.println("OS type is Unix [POSIX]");
             operatingSystemType = OS_TYPE.Linux;
         }
     }

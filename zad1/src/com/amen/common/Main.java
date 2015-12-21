@@ -23,13 +23,15 @@ public class Main {
     public static void main(String[] args) {
         AppRuntime.parseParameters(args);
 
-        String seqNotParsed1 = AppRuntime.getParameterValue(AppRuntime.PARAM_SEQ1);
-        String seqNotParsed2 = AppRuntime.getParameterValue(AppRuntime.PARAM_SEQ2);
+        String seqNotParsed1 = AppRuntime.getInputA();
+        String seqNotParsed2 = AppRuntime.getInputB();
 
-        SmithWaterman runner = new SmithWaterman(seqNotParsed1, seqNotParsed2, null);
+        Double[][] similarityMatrix = AppRuntime.getInputSimilarityMatrix();
+
+        SmithWaterman runner = new SmithWaterman(seqNotParsed1, seqNotParsed2, similarityMatrix);
         runner.run();
 
-        NeedlemanWunsch runner2 = new NeedlemanWunsch(seqNotParsed1, seqNotParsed2, null);
+        NeedlemanWunsch runner2 = new NeedlemanWunsch(seqNotParsed1, seqNotParsed2, similarityMatrix);
         runner2.run();
     }
 
