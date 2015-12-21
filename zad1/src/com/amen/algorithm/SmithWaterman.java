@@ -7,6 +7,7 @@ package com.amen.algorithm;
 
 import com.amen.common.Utils;
 
+import java.awt.*;
 import java.util.Stack;
 
 /**
@@ -61,6 +62,10 @@ public class SmithWaterman {
         System.out.println(s1.toString());
         System.out.println(alignment.toString());
         System.out.println(s2.toString());
+        System.out.println();
+        System.out.println();
+        System.out.println(a.toString());
+        System.out.println(b.toString());
 //        System.out.println(String.format("aligment result: {0} gaps, {1} ident, {2} missmatched", tGaps, tIden, tMiss));
 
         return alignment.toString();
@@ -69,7 +74,7 @@ public class SmithWaterman {
     private void evaluateScore() {
         _scoreMatrix = new Element[sequence1.length() + 1][sequence2.length() + 1];
 
-        int gap, gapPenalty = Params.GAP_PENALTY, gapLength = Params.GAP_LENGTH, gapPenaltyExtension = Params.GAP_PENALTY_EXTENSION;
+        int gap, gapPenalty = Params.GAPPENALTY, gapLength = Params.GAPLENGTH, gapPenaltyExtension = Params.GAPEXTENSION;
         for (int i = 0; i <= sequence1.length(); i++) {
             for (int j = 0; j <= sequence2.length(); j++) {
                 _scoreMatrix[i][j] = new Element();
@@ -112,7 +117,57 @@ public class SmithWaterman {
             }
         }
 
-        generateSequenceAlignment(bestX, bestY);
+//        generateSequenceAlignment(bestX, bestY);
+        traceback(bestX, bestY);
+    }
+
+    public void traceback(int bestX, int bestY) {
+        StringBuilder line1 = new StringBuilder();
+        StringBuilder line2 = new StringBuilder();
+
+        Point lPosition = new Point(bestX, bestY);
+        int lMove = evaluateMove(lPosition);
+        while (lMove != 0) {
+            if (lMove == 1) {
+                line1.append(sequence1.charAt(lPosition.x - 1));
+                line2.append(sequence2.charAt(lPosition.y - 1));
+                lPosition.setLocation((lPosition.x - 1), (lPosition.y - 1));
+            } else if (lMove == 1) {
+                line1.append(sequence1.charAt(lPosition.x - 1));
+                line2.append('-');
+                lPosition.setLocation((lPosition.x - 1), (lPosition.y));
+            } else {
+                line1.append('-');
+                line2.append(sequence2.charAt(lPosition.y - 1));
+                lPosition.setLocation((lPosition.x), (lPosition.y - 1));
+            }
+            lMove = evaluateMove(lPosition);
+        }
+        line1.append(sequence1.charAt(lPosition.x - 1));
+        line2.append(sequence2.charAt(lPosition.y - 1));
+
+        System.out.println(line1);
+        System.out.println(line2);
+
+    }
+
+    private int evaluateMove(Point lPosition) {
+        double scoreDiag, scoreUp, scoreLeft;
+
+        scoreDiag = _scoreMatrix[lPosition.x - 1][lPosition.y - 1].value;
+        scoreLeft = _scoreMatrix[lPosition.x][lPosition.y - 1].value;
+        scoreUp = _scoreMatrix[lPosition.x - 1][lPosition.y].value;
+
+        if (scoreDiag >= scoreUp && scoreDiag >= scoreLeft) {
+            return scoreDiag != 0 ? 1 : 0;
+        } else if (scoreUp > scoreDiag && scoreUp >= scoreLeft) {
+            return scoreUp != 0 ? 2 : 0;
+        } else if (scoreLeft > scoreDiag && scoreLeft > scoreUp) {
+            return scoreLeft != 0 ? 3 : 0;
+        }
+
+
+        return 0;
     }
 
     public void generateSequenceAlignment(int bestX, int bestY) {

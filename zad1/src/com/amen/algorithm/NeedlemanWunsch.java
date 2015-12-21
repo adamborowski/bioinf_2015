@@ -5,7 +5,6 @@
  */
 package com.amen.algorithm;
 
-import com.amen.algorithm.Element;
 import com.amen.common.Utils;
 
 import java.util.ArrayList;
@@ -84,7 +83,7 @@ public class NeedlemanWunsch {
 
     private double getSimilarityFactorForElements(char first, char second) {
         if (similarityMatrix == null) {
-            return 0.0;
+            return first==second?1:0.0;
         }
         return similarityMatrix[elementValue(first)][elementValue(second)];
     }
@@ -166,6 +165,7 @@ public class NeedlemanWunsch {
 
         resultList.add(alignmentString1.toString());
         resultList.add(alignmentString2.toString());
+        resultList.add("");
 
         resultsCount++;
 

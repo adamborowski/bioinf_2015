@@ -41,8 +41,8 @@ public class AppRuntime {
         sSysConfig = new ConfigurationSystem();
         sParameters = new HashMap<>();
         sParameters.put(PARAM_CONFIG_FILE, new AppParameter(PARAM_CONFIG_FILE));
-        sParameters.put(PARAM_SEQ1, new AppParameter(PARAM_SEQ1, "ATAAGC"));
-        sParameters.put(PARAM_SEQ2, new AppParameter(PARAM_SEQ2, "AAAAACG"));
+        sParameters.put(PARAM_SEQ1, new AppParameter(PARAM_SEQ1, "TTTACACACGGG"));
+        sParameters.put(PARAM_SEQ2, new AppParameter(PARAM_SEQ2, "ACACAC"));
         sParameters.put(PARAM_SEQ1F, new AppParameter(PARAM_SEQ1F, null));
         sParameters.put(PARAM_SEQ2F, new AppParameter(PARAM_SEQ2F, null));
         sParameters.put(PARAM_SIMILARITYF, new AppParameter(PARAM_SIMILARITYF, null));
