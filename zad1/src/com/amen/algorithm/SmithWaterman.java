@@ -5,6 +5,8 @@
  */
 package com.amen.algorithm;
 
+import com.amen.common.Utils;
+
 import java.util.Stack;
 
 /**
@@ -42,12 +44,26 @@ public class SmithWaterman {
                 _scoreMatrix[i][j] = new Element();
                 gap = gapPenalty + (gapLength - 1) * gapPenaltyExtension;
                 if (i != 0 && j != 0) {
-                    if (sequence1.charAt(i - 1) == sequence2.charAt(j - 1)) {
+                    final double upLeftElementValue = _scoreMatrix[i - 1][j - 1].value;
+                    final double upElementValue = _scoreMatrix[i - 1][j].value;
+                    final double leftElementValue = _scoreMatrix[i][j - 1].value;
+                    boolean elementsMatches = sequence1.charAt(i - 1) == sequence2.charAt(j - 1);
+                    if (elementsMatches) {
                         gapLength = 0;
-                        _scoreMatrix[i][j].value = Math.max(0, Math.max(_scoreMatrix[i - 1][j - 1].value + Params.MATCH, Math.max(_scoreMatrix[i - 1][j].value + gap, _scoreMatrix[i][j - 1].value + gap)));
+                        _scoreMatrix[i][j].value = Utils.max(
+                                0.0,
+                                upLeftElementValue + Params.MATCH,
+                                upElementValue + gap,
+                                leftElementValue + gap
+                        );
                     } else {
                         gapLength++;
-                        _scoreMatrix[i][j].value = Math.max(0, Math.max(_scoreMatrix[i - 1][j - 1].value + gap, Math.max(_scoreMatrix[i - 1][j].value + gap, _scoreMatrix[i][j - 1].value + gap)));
+                        _scoreMatrix[i][j].value = Utils.max(
+                                0.0,
+                                upLeftElementValue + gap,
+                                upElementValue + gap,
+                                leftElementValue + gap
+                        );
                     }
                 }
             }

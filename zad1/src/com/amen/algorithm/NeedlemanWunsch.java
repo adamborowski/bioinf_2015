@@ -5,7 +5,8 @@
  */
 package com.amen.algorithm;
 
-import com.amen.algorithm.Element;
+import com.amen.common.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,20 +61,20 @@ public class NeedlemanWunsch {
         for (int y = 1; y <= sequence1.length(); y++) {
             for (int x = 1; x <= sequence2.length(); x++) {
                 _scoreMatrix[y][x] = new Element();
-                double valDiag = _scoreMatrix[y - 1][x - 1].getValue() + getSimilarityFactorForElements(sequence1.charAt(y - 1), sequence2.charAt(x - 1));
-                double valUp = _scoreMatrix[y - 1][x].getValue() + Params.GAP_PENALTY;
-                double valLeft = _scoreMatrix[y][x - 1].getValue() + Params.GAP_PENALTY;
-                double max = Math.max(valDiag, valUp);
-                max = Math.max(max, valLeft);
+                double upLeftElementValue = _scoreMatrix[y - 1][x - 1].getValue();
+                double upElementValue = _scoreMatrix[y - 1][x].getValue();
+                double leftElementValue = _scoreMatrix[y][x - 1].getValue();
+                double upLeftElementValueScore = upLeftElementValue + getSimilarityFactorForElements(sequence1.charAt(y - 1), sequence2.charAt(x - 1));
+                double upElementValueScore = upElementValue + Params.GAP_PENALTY;
+                double leftElementValueScore = leftElementValue + Params.GAP_PENALTY;
+                final double max = Utils.max(upLeftElementValueScore, upElementValueScore, leftElementValueScore);
                 _scoreMatrix[y][x].setValue(max);
 
-                if (valDiag == max) {
+                if (upLeftElementValueScore == max) {
                     _scoreMatrix[y][x].setDiagonal(true);
-                }
-                if (valUp == max) {
+                } else if (upElementValueScore == max) {
                     _scoreMatrix[y][x].setUp(true);
-                }
-                if (valLeft == max) {
+                } else if (leftElementValueScore == max) {
                     _scoreMatrix[y][x].setLeft(true);
                 }
 

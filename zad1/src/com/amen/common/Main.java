@@ -28,9 +28,12 @@ public class Main {
 
         Double[][] similarityMatrix = AppRuntime.getInputSimilarityMatrix();
 
+
+        System.out.println("\n\nSMITH WATERMAN\n\n");
         SmithWaterman runner = new SmithWaterman(seqNotParsed1, seqNotParsed2, similarityMatrix);
         runner.run();
 
+        System.out.println("\n\nNEEDLEMAN-WUNSCH\n\n");
         NeedlemanWunsch runner2 = new NeedlemanWunsch(seqNotParsed1, seqNotParsed2, similarityMatrix);
         runner2.run();
     }
