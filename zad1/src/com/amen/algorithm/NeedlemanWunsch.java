@@ -5,6 +5,7 @@
  */
 package com.amen.algorithm;
 
+import com.amen.algorithm.Element;
 import com.amen.common.Utils;
 
 import java.util.ArrayList;
@@ -37,10 +38,8 @@ public class NeedlemanWunsch {
         System.out.println("SIMILARITY VALUE = " + _scoreMatrix[sequence1.length()][sequence2.length()].getValue());
 
         if (sequences != null) {
-            int a = -1;
             for (String s : sequences) {
-                a++;
-                System.out.println("seq #" + a + ": " + s);
+                System.out.println(s);
             }
         }
         System.out.println();
@@ -63,24 +62,19 @@ public class NeedlemanWunsch {
         for (int y = 1; y <= sequence1.length(); y++) {
             for (int x = 1; x <= sequence2.length(); x++) {
                 _scoreMatrix[y][x] = new Element();
-                double upLeftElementValue = _scoreMatrix[y - 1][x - 1].getValue();
-                double upElementValue = _scoreMatrix[y - 1][x].getValue();
-                double leftElementValue = _scoreMatrix[y][x - 1].getValue();
-                double upLeftElementValueScore = upLeftElementValue + getSimilarityFactorForElements(sequence1.charAt(y - 1), sequence2.charAt(x - 1));
-                double upElementValueScore = upElementValue + Params.GAP_PENALTY;
-                double leftElementValueScore = leftElementValue + Params.GAP_PENALTY;
-                final double max = Utils.max(
-                        upLeftElementValueScore,
-                        upElementValueScore,
-                        leftElementValueScore
-                );
+                double valDiag = _scoreMatrix[y - 1][x - 1].getValue() + getSimilarityFactorForElements(sequence1.charAt(y - 1), sequence2.charAt(x - 1));
+                double valUp = _scoreMatrix[y - 1][x].getValue() + Params.GAP_PENALTY;
+                double valLeft = _scoreMatrix[y][x - 1].getValue() + Params.GAP_PENALTY;
+                double max = Utils.max(valDiag, valUp, valLeft);
                 _scoreMatrix[y][x].setValue(max);
 
-                if (upLeftElementValueScore == max) {
+                if (valDiag == max) {
                     _scoreMatrix[y][x].setDiagonal(true);
-                } else if (upElementValueScore == max) {
+                }
+                if (valUp == max) {
                     _scoreMatrix[y][x].setUp(true);
-                } else if (leftElementValueScore == max) {
+                }
+                if (valLeft == max) {
                     _scoreMatrix[y][x].setLeft(true);
                 }
 
@@ -89,8 +83,10 @@ public class NeedlemanWunsch {
     }
 
     private double getSimilarityFactorForElements(char first, char second) {
-        return 0.0;
-        //return similarityMatrix[elementValue(first)][elementValue(second)];
+        if (similarityMatrix == null) {
+            return 0.0;
+        }
+        return similarityMatrix[elementValue(first)][elementValue(second)];
     }
 
     private int elementValue(char ch) {
