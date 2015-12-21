@@ -37,8 +37,10 @@ public class NeedlemanWunsch {
         System.out.println("SIMILARITY VALUE = " + _scoreMatrix[sequence1.length()][sequence2.length()].getValue());
 
         if (sequences != null) {
+            int a = -1;
             for (String s : sequences) {
-                System.out.println(s);
+                a++;
+                System.out.println("seq #" + a + ": " + s);
             }
         }
         System.out.println();
