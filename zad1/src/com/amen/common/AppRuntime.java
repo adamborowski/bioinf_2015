@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * @author AmeN
  */
-public class ProgramRuntime {
+public class AppRuntime {
 
     public static final String PARAM_CONFIG_FILE = "--configFile";
     public static final String PARAM_SEQ1 = "--seq1";
@@ -29,16 +29,16 @@ public class ProgramRuntime {
     public static final String PARAM_GEN_SIZE = "--genSize";
 
     private static final ConfigurationSystem sSysConfig;
-    private static final Map<String, ProgramParameter> sParameters;
+    private static final Map<String, AppParameter> sParameters;
     private static final String applicationDirectory;
 
     static {
         sSysConfig = new ConfigurationSystem();
         sParameters = new HashMap<>();
-        sParameters.put(PARAM_CONFIG_FILE, new ProgramParameter(PARAM_CONFIG_FILE));
-        sParameters.put(PARAM_SEQ1, new ProgramParameter(PARAM_SEQ1, "CCTG---TACCC"));
-        sParameters.put(PARAM_SEQ2, new ProgramParameter(PARAM_SEQ2, "C-AGCCCTA--C"));
-        sParameters.put(PARAM_GEN_SIZE, new ProgramParameter(PARAM_GEN_SIZE, "6"));
+        sParameters.put(PARAM_CONFIG_FILE, new AppParameter(PARAM_CONFIG_FILE));
+        sParameters.put(PARAM_SEQ1, new AppParameter(PARAM_SEQ1, "ACACACTA"));
+        sParameters.put(PARAM_SEQ2, new AppParameter(PARAM_SEQ2, "AGCACACA"));
+        sParameters.put(PARAM_GEN_SIZE, new AppParameter(PARAM_GEN_SIZE, "6"));
 
         applicationDirectory = DirectoryWalker.appendDirectory(sSysConfig.getUserDirectory(), "Program");
         try {
@@ -46,7 +46,7 @@ public class ProgramRuntime {
                 Files.createDirectory(Paths.get(applicationDirectory));
             }
         } catch (IOException ex) {
-            Log.Fatal(ProgramRuntime.class, "Application directory can not be created!", ex);
+            Log.Fatal(AppRuntime.class, "Application directory can not be created!", ex);
         }
     }
 
@@ -66,7 +66,7 @@ public class ProgramRuntime {
                     sParameters.get(parameter.split("=")[0]).setValue(parameter.split("=")[1]);
                 }
             } catch (Exception e) {
-                Log.Error(ProgramRuntime.class, e);
+                Log.Error(AppRuntime.class, e);
             }
         });
     }

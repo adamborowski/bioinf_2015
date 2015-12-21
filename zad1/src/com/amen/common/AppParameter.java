@@ -9,15 +9,15 @@ package com.amen.common;
  *
  * @author AmeN
  */
-public class ProgramParameter extends Property {
+public class AppParameter extends Property {
 
     private final String _default;
 
-    public ProgramParameter(String p_key) {
+    public AppParameter(String p_key) {
         this(p_key, null);
     }
 
-    public ProgramParameter(String p_key, String p_default) {
+    public AppParameter(String p_key, String p_default) {
         super(p_key, null);
 
         _default = p_default;

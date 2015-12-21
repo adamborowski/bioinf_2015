@@ -5,11 +5,8 @@
  */
 package com.amen.common;
 
-import com.amen.algorithm.sw.AlgorithmSWRunner;
-import com.amen.algorithm.sw.AlgorithmSmithWaterman;
-import com.amen.algorithm.sw.type.AlignmentLines;
-import com.amen.algorithm.sw.type.AlignmentResult;
-import com.amen.common.ProgramRuntime;
+import com.amen.algorithm.NeedlemanWunsch;
+import com.amen.algorithm.SmithWaterman;
 
 /**
  *
@@ -24,16 +21,16 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ProgramRuntime.parseParameters(args);
+        AppRuntime.parseParameters(args);
 
-        
-        AlgorithmSWRunner runner = new AlgorithmSWRunner();
-        runner.createMatrix();
-        AlignmentLines lines = AlgorithmSmithWaterman.traceback(runner.getMatrix());
-        AlignmentResult result = AlgorithmSmithWaterman.establishAlignmentString(lines);
+        String seqNotParsed1 = AppRuntime.getParameterValue(AppRuntime.PARAM_SEQ1);
+        String seqNotParsed2 = AppRuntime.getParameterValue(AppRuntime.PARAM_SEQ2);
 
-        runner.getMatrix().printScoreMatrix();
-        result.print();
+        SmithWaterman runner = new SmithWaterman(seqNotParsed1, seqNotParsed2, null);
+        runner.run();
+
+        NeedlemanWunsch runner2 = new NeedlemanWunsch(seqNotParsed1, seqNotParsed2, null);
+        runner2.run();
     }
 
 }
