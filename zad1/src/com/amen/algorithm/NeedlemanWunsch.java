@@ -67,7 +67,11 @@ public class NeedlemanWunsch {
                 double upLeftElementValueScore = upLeftElementValue + getSimilarityFactorForElements(sequence1.charAt(y - 1), sequence2.charAt(x - 1));
                 double upElementValueScore = upElementValue + Params.GAP_PENALTY;
                 double leftElementValueScore = leftElementValue + Params.GAP_PENALTY;
-                final double max = Utils.max(upLeftElementValueScore, upElementValueScore, leftElementValueScore);
+                final double max = Utils.max(
+                        upLeftElementValueScore,
+                        upElementValueScore,
+                        leftElementValueScore
+                );
                 _scoreMatrix[y][x].setValue(max);
 
                 if (upLeftElementValueScore == max) {
