@@ -35,6 +35,37 @@ public class SmithWaterman {
         ElementPrinter.printScoreMatrix(_scoreMatrix, sequence1, sequence2);
     }
 
+    public String establishAlignmentString(String a, String b) {
+        StringBuilder alignment = new StringBuilder();
+        int tGaps = 0, tIden = 0, tMiss = 0;
+
+        StringBuilder s1 = new StringBuilder();
+        StringBuilder s2 = new StringBuilder();
+        for (Character val_s1 : a.toCharArray()) {
+            for (Character val_s2 : b.toCharArray()) {
+                s1.append(val_s1);
+                s2.append(val_s2);
+                if (val_s1.equals(val_s2)) {
+                    alignment.append('|');
+                    tIden++;
+                } else if (val_s1.equals('-') || val_s2.equals('-')) {
+                    alignment.append(' ');
+                    tGaps++;
+                } else {
+                    alignment.append(':');
+                    tMiss++;
+                }
+            }
+        }
+
+        System.out.println(s1.toString());
+        System.out.println(alignment.toString());
+        System.out.println(s2.toString());
+//        System.out.println(String.format("aligment result: {0} gaps, {1} ident, {2} missmatched", tGaps, tIden, tMiss));
+
+        return alignment.toString();
+    }
+
     private void evaluateScore() {
         _scoreMatrix = new Element[sequence1.length() + 1][sequence2.length() + 1];
 
@@ -137,7 +168,10 @@ public class SmithWaterman {
                 }
             }
         }
-
-        System.out.println("Alignments: " + alignOne + " <-> " + alignTwo);
+        System.out.println(">>>>");
+//        System.out.println(alignOne);
+        establishAlignmentString(alignOne, alignTwo);
+//        System.out.println(alignTwo);
+        System.out.println("<<<<");
     }
 }
