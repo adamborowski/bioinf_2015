@@ -1,0 +1,11 @@
+Zestawienia optymalne 2 sekwencji. Typ A.
+Wymagane wyznaczenie odległości edycyjnej i podobieństwa całych sekwencji aminokwasowych,
+najlepszego zestawienia lokalnego, oraz globalnego - wszystko w modelach bez funkcji kary za długość przerwy.
+
+Odczyt danych z plików (2 sekwencje i macierz podobieństwa lub dystansu 5×5 między aminokwasami).
+Wyjście: optymalne zestawienie i jego ewaluacja.
+
+Na życzenie użytkownika można podać  sekwencje kodujące RNA, które są przez program automatycznie translowane zgodnie z
+kodem genetycznym na aminokwasowe, składane jako aminokwasowe (a więc przy użyciu
+macierzy 21×21), a wynik znów przedstawiamy jako dopasowanie w alfabecie RNA (a więc
+złożenie de facto kodonów sekwencji wejściowych).

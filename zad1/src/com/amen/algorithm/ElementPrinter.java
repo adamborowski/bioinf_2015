@@ -18,7 +18,17 @@ public class ElementPrinter {
         int _cols = _seq2.length();
 
         System.out.println("Score matrix:");
+        System.out.println("");
         int t_whiteSpaceCnt;
+        //noinspection Duplicates
+        for (int iterator = 0; iterator <= _cols + 1; iterator++) {
+            t_whiteSpaceCnt = TOTAL_SPACE - 1;
+            for (int it = 0; it < (t_whiteSpaceCnt + 1); it++) {
+                System.out.print("─");
+            }
+        }
+        System.out.print("─");
+        System.out.println("");
         for (int iterator = 0; iterator < TOTAL_SPACE; iterator++) {
             System.out.print(" ");
         }
@@ -34,6 +44,19 @@ public class ElementPrinter {
             }
         }
         System.out.println("");
+        //noinspection Duplicates
+        for (int iterator = 0; iterator <= _cols + 1; iterator++) {
+            t_whiteSpaceCnt = TOTAL_SPACE - 1;
+            for (int it = 0; it < (t_whiteSpaceCnt + 1); it++) {
+                if (iterator == 1 && it == 0) {
+                    System.out.print("┬");
+                } else {
+                    System.out.print("─");
+                }
+            }
+        }
+        System.out.print("─");
+        System.out.println("");
 
         for (int l_row = 0; l_row <= _rows; l_row++) {
             t_whiteSpaceCnt = TOTAL_SPACE - 2;
@@ -45,7 +68,7 @@ public class ElementPrinter {
             for (int it = 0; it <= (t_whiteSpaceCnt); it++) {
                 System.out.print(" ");
             }
-            System.out.print(":");
+            System.out.print("│");
 
             for (int l_col = 0; l_col <= _cols; l_col++) {
                 t_whiteSpaceCnt = TOTAL_SPACE - String.valueOf(_score_matrix[l_row][l_col].value).length() - 1;
@@ -56,5 +79,18 @@ public class ElementPrinter {
             }
             System.out.println("");
         }
+        for (int iterator = 0; iterator <= _cols + 1; iterator++) {
+            t_whiteSpaceCnt = TOTAL_SPACE - 1;
+            for (int it = 0; it < (t_whiteSpaceCnt + 1); it++) {
+                if (iterator == 1 && it == 0) {
+                    System.out.print("┴");
+                } else {
+                    System.out.print("─");
+                }
+            }
+        }
+        System.out.print("─");
+        System.out.println("");
+
     }
 }

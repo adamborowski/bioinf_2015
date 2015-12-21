@@ -89,8 +89,8 @@ public class SmithWaterman {
             }
         }
 
-        String alignOne = new String();
-        String alignTwo = new String();
+        String alignOne = "";
+        String alignTwo = "";
 
         Stack<String> backActions = (Stack<String>) actions.clone();
         for (int iterator = 0; iterator < sequence1.length(); iterator++) {
