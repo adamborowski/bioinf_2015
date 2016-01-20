@@ -3,17 +3,27 @@ import './ForceGraph.less'
 import * as Nt from "../../../vendor/ntseq.js"
 class ForceGraph {
 
-    prepareData(width, height) {
+    prepareData(width, height, _seq1, _seq2) {
+        _seq1 = _seq1.toUpperCase();
+        _seq2 = _seq2.toUpperCase();
+        var seq = (new Nt.Seq()).read(_seq1);
 
-        var seq = (new Nt.Seq()).read('ATCATCGATCGGCA');
-
-        var querySeq = (new Nt.Seq()).read('CAGCAATCDC');
+        var querySeq = (new Nt.Seq()).read(_seq2);
         var map = seq.mapSequence(querySeq);
         var seq1 = seq.sequence();
         var seq2 = map.best().alignmentMask().sequence();
+
+        console.log("seq1", seq1, "seq2", seq2);
+
+
         var offset = map.best().position;
 
-        seq2 = seq2.match(".*[^\-]+")[0];
+
+        //var match = seq2.match(".*[^\-]+");
+        //if (match == null) {
+        //    return {allNodes: [], edges: [], secondaryEdges: []};
+        //}
+        //seq2 = match[0];
 
 
         var nodes1 = [];
@@ -39,11 +49,26 @@ class ForceGraph {
         var lastNode2;
         var numGaps = 0;
         for (var i = 0; i < seq2.length; i++) {
-            if (seq2.charAt(i) == seq1.charAt(i + offset)) {
-                var node = {x: secondRowSpace * (i - numGaps) + sx, y: dy + sy, char: seq2.charAt(i)};
+            if (true || seq2.charAt(i) == seq1.charAt(i + offset)) {
+                var newChar = seq2.charAt(i);
+                var node = {
+                    x: secondRowSpace * (i - numGaps) + sx,
+                    y: dy + sy,
+                    char: _seq2.charAt(i),
+                    free: newChar == '-'
+                };
                 nodes2[i] = node;
                 allNodes.push(node);
-                secondaryEdges.push({source: nodes1[i + offset], target: node, vertical: true});
+
+                var source = nodes1[i + offset];
+                if (source) {
+                    secondaryEdges.push({
+                        source: source,
+                        target: node,
+                        vertical: newChar != '-',
+                        hidden: newChar == '-'
+                    });
+                }
                 if (lastNode2) {
                     edges.push({source: lastNode2, target: node, gaps: numGaps});
                 }
@@ -73,11 +98,10 @@ class ForceGraph {
         return {allNodes, edges, secondaryEdges};
     }
 
-
-    constructor(scope, element, attrs) {
+    visualize(attrs) {
         var width = 800,
-            height = 400;
-        var data = this.prepareData(width, height);
+            height = 550;
+        var data = this.prepareData(width, height, attrs.seq1, attrs.seq2);
         var fill = d3.scale.category20();
 
 
@@ -104,8 +128,11 @@ class ForceGraph {
             .gravity(0.0003)
             .on("tick", tick);
 
-        var svg = d3.select(element[0]).append("svg")
-            .attr("width", width)
+        var svg = this.svg;
+        svg.selectAll("*").remove();
+        svg
+            .
+            attr("width", width)
             .attr("height", height)
         //.on("mousemove", mousemove)
         //.on("mousedown", mousedown);
@@ -126,11 +153,12 @@ class ForceGraph {
 
         restart();
 
-        setTimeout(()=> {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(()=> {
             data.edges.push(...data.secondaryEdges);
             stage = 1;
             restart();
-        }, 3000);
+        }, 1600);
 
         //function mousemove() {
         //    cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
@@ -169,7 +197,7 @@ class ForceGraph {
 
             node.attr("transform", function (d) {
                 return "translate(" + d.x + "," + d.y + ")";
-                });
+            });
         }
 
         function restart() {
@@ -195,12 +223,26 @@ class ForceGraph {
                 .attr("class", "link")
                 .classed({
                     link: true,
-                    vertical: (a)=>a.vertical == true
+                    vertical: (a)=>a.vertical == true,
+                    hidden: (a)=>a.hidden,
+                    free: (a)=>a.free
                 });
 
 
             force.start();
         }
+    }
+
+
+    constructor(scope, element, attrs) {
+
+
+        this.element = element;
+        this.svg = d3.select(this.element[0]).append("svg");
+        this.visualize(scope)
+        scope.$watch("[seq1,seq2]", (value)=> {
+            this.visualize(scope)
+        });
     }
 
 }
@@ -209,7 +251,10 @@ class ForceGraph {
 export default () => {
     return {
         restrict: 'E',
-        dupa: 'je',
+        scope: {
+            seq1: "@seq1",
+            seq2: "@seq2"
+        },
         link: function () {
             return new ForceGraph(...arguments)
         }

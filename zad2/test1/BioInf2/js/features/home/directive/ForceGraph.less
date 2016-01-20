@@ -48,10 +48,18 @@ force-graph {
   .node-letter {
   }
 
+  circle {
+    fill: #ccc;
+  }
+
   .cursor {
     fill: none;
     stroke: brown;
     pointer-events: none;
+  }
+
+  .free {
+    alpha: .8;
   }
 
   .link {
@@ -62,5 +70,14 @@ force-graph {
       stroke-dashoffset: 3;
       stroke: #1c6e1c;
     }
+    &.hidden {
+      display: none;
+    }
+  }
+}
+
+.acgt-form {
+  input {
+    text-transform: uppercase;
   }
 }
