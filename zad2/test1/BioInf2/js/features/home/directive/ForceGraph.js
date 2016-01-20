@@ -3,11 +3,11 @@ import './ForceGraph.less'
 import * as Nt from "../../../vendor/ntseq.js"
 class ForceGraph {
 
-    prepareData(width) {
+    prepareData(width, height) {
 
-        var seq = (new Nt.Seq()).read('ATGCCCGACTGCATCGATCGGCA');
+        var seq = (new Nt.Seq()).read('ATCATCGATCGGCA');
 
-        var querySeq = (new Nt.Seq()).read('AACACDGGCTDCTGCTAGGDC');
+        var querySeq = (new Nt.Seq()).read('CAGCAATCDC');
         var map = seq.mapSequence(querySeq);
         var seq1 = seq.sequence();
         var seq2 = map.best().alignmentMask().sequence();
@@ -54,12 +54,21 @@ class ForceGraph {
                 numGaps++;
             }
         }
-        //nodes1[0].fixed = true;
-        //nodes1[nodes1.length - 1].fixed = true;
         //
-        //nodes2[0].fixed = true;
-        //nodes2[nodes2.length - 1].fixed = true;
-
+        //var dd = 20;
+        //
+        //var p1 = {x: dd, y: dd, pilot: true, fixed: true};
+        //allNodes.push(p1);
+        //var p2 = {x: width - dd * 2, y: dd, pilot: true, fixed: true};
+        //allNodes.push(p2);
+        //var p3 = {x: dd, y: height - dd * 2, pilot: true, fixed: true};
+        //allNodes.push(p3);
+        //var p4 = {x: width - dd * 2, y: height - dd * 2, pilot: true, fixed: true};
+        //allNodes.push(p4);
+        //edges.push({source: p1, target: nodes1[0]});
+        //edges.push({source: p2, target: nodes1[nodes1.length - 1]});
+        //edges.push({source: p3, target: nodes2[0]});
+        //edges.push({source: p4, target: nodes2[nodes2.length - 1]});
 
         return {allNodes, edges, secondaryEdges};
     }
@@ -68,7 +77,7 @@ class ForceGraph {
     constructor(scope, element, attrs) {
         var width = 800,
             height = 400;
-        var data = this.prepareData(width);
+        var data = this.prepareData(width, height);
         var fill = d3.scale.category20();
 
 
@@ -80,11 +89,12 @@ class ForceGraph {
             .nodes(data.allNodes) // initialize with a single node
             .links(data.edges)
             .linkDistance((a)=> {
+                var space = 30;
                 if (stage == 0) {
-                    return 20;
+                    return space;
                 }
-                if (a.vertical || stage == 0) return 35;
-                var number = ((a.gaps || 0) + 1) * 20;
+                if (a.vertical || stage == 0) return 65;
+                var number = ((a.gaps || 0) + 1) * space;
                 console.log(number);
                 return number;
             })
