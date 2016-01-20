@@ -15,23 +15,25 @@
     "webpack.config.prod.js"
   ],
   "keywords": [
-      "es6", "BioInf2"
+    "es6",
+    "BioInf2"
   ],
   "author": "aborowski ",
   "license": "MIT",
-  "dependencies":{
+  "dependencies": {
     "angular": "^1.4.8",
     "angular-animate": "^1.4.8",
+    "angular-motion": "^0.4.3",
     "angular-route": "^1.4.8",
     "angular-sanitize": "^1.4.8",
+    "angular-smart-table": "^2.1.6",
     "angular-strap": "^2.3.6",
     "angular-sweetnotifier": "^2.0.3",
     "angular-theme-spinner": "^1.2.3",
-    "angular-smart-table": "^2.1.6",
-    "angular-motion": "^0.4.3",
-    "splash-screen": "^2.2.2",
     "bootstrap": "^3.3.6",
-    "bootstrap-additions": "0.3.1"
+    "bootstrap-additions": "0.3.1",
+    "d3": "^3.5.12",
+    "splash-screen": "^2.2.2"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.8",
