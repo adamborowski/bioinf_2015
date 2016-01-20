@@ -1,24 +1,104 @@
 import * as d3 from "d3"
 import './ForceGraph.less'
-
+import * as Nt from "../../../vendor/ntseq.js"
 class ForceGraph {
+
+    prepareData(width) {
+
+        var seq = (new Nt.Seq()).read('ATGCCCGACTGCATCGATCGGCA');
+
+        var querySeq = (new Nt.Seq()).read('AACACDGGCTDCTGCTAGGDC');
+        var map = seq.mapSequence(querySeq);
+        var seq1 = seq.sequence();
+        var seq2 = map.best().alignmentMask().sequence();
+        var offset = map.best().position;
+
+        seq2 = seq2.match(".*[^\-]+")[0];
+
+
+        var nodes1 = [];
+        var nodes2 = [];
+        var allNodes = [];
+        var edges = [];
+        var secondaryEdges = [];
+
+        var dy = 120;
+        var sy = 150;
+        var firstRowSpace = width / (seq1.length - 1) / 2;
+        var secondRowSpace = width / (seq2.length - 1) / 2;
+        var sx = width / 4;
+
+        for (var i = 0; i < seq1.length; i++) {
+            var node = {x: firstRowSpace * i + sx, y: sy, char: seq1.charAt(i)};
+            nodes1[i] = node;
+            allNodes.push(node);
+            if (i > 0) {
+                edges.push({source: allNodes[i - 1], target: node});
+            }
+        }
+        var lastNode2;
+        var numGaps = 0;
+        for (var i = 0; i < seq2.length; i++) {
+            if (seq2.charAt(i) == seq1.charAt(i + offset)) {
+                var node = {x: secondRowSpace * (i - numGaps) + sx, y: dy + sy, char: seq2.charAt(i)};
+                nodes2[i] = node;
+                allNodes.push(node);
+                secondaryEdges.push({source: nodes1[i + offset], target: node, vertical: true});
+                if (lastNode2) {
+                    edges.push({source: lastNode2, target: node, gaps: numGaps});
+                }
+                lastNode2 = node;
+                numGaps = 0;
+            }
+            else {
+                numGaps++;
+            }
+        }
+        //nodes1[0].fixed = true;
+        //nodes1[nodes1.length - 1].fixed = true;
+        //
+        //nodes2[0].fixed = true;
+        //nodes2[nodes2.length - 1].fixed = true;
+
+
+        return {allNodes, edges, secondaryEdges};
+    }
+
+
     constructor(scope, element, attrs) {
-        var width = 600,
+        var width = 800,
             height = 400;
+        var data = this.prepareData(width);
         var fill = d3.scale.category20();
+
+
+        var stage = 0;
+
 
         var force = d3.layout.force()
             .size([width, height])
-            .nodes([{}]) // initialize with a single node
-            .linkDistance(30)
-            .charge(-60)
+            .nodes(data.allNodes) // initialize with a single node
+            .links(data.edges)
+            .linkDistance((a)=> {
+                if (stage == 0) {
+                    return 20;
+                }
+                if (a.vertical || stage == 0) return 35;
+                var number = ((a.gaps || 0) + 1) * 20;
+                console.log(number);
+                return number;
+            })
+            .linkStrength(0.9)
+            .charge(-100)
+            .friction(0.6)
+            .gravity(0.0003)
             .on("tick", tick);
 
         var svg = d3.select(element[0]).append("svg")
             .attr("width", width)
             .attr("height", height)
-            .on("mousemove", mousemove)
-            .on("mousedown", mousedown);
+        //.on("mousemove", mousemove)
+        //.on("mousedown", mousedown);
 
         svg.append("rect")
             .attr("width", width)
@@ -29,33 +109,39 @@ class ForceGraph {
             node = svg.selectAll(".node"),
             link = svg.selectAll(".link");
 
-        var cursor = svg.append("circle")
-            .attr("r", 30)
-            .attr("transform", "translate(-100,-100)")
-            .attr("class", "cursor");
+        //var cursor = svg.append("circle")
+        //    .attr("r", 30)
+        //    .attr("transform", "translate(-100,-100)")
+        //    .attr("class", "cursor");
 
         restart();
 
-        function mousemove() {
-            cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
-        }
-
-        function mousedown() {
-            var point = d3.mouse(this),
-                node = {x: point[0], y: point[1]},
-                n = nodes.push(node);
-
-            // add links to any nearby nodes
-            nodes.forEach(function (target) {
-                var x = target.x - node.x,
-                    y = target.y - node.y;
-                if (Math.sqrt(x * x + y * y) < 30) {
-                    links.push({source: node, target: target});
-                }
-            });
-
+        setTimeout(()=> {
+            data.edges.push(...data.secondaryEdges);
+            stage = 1;
             restart();
-        }
+        }, 3000);
+
+        //function mousemove() {
+        //    cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
+        //}
+        //
+        //function mousedown() {
+        //    var point = d3.mouse(this),
+        //        node = {x: point[0], y: point[1]},
+        //        n = nodes.push(node);
+        //
+        //    // add links to any nearby nodes
+        //    nodes.forEach(function (target) {
+        //        var x = target.x - node.x,
+        //            y = target.y - node.y;
+        //        if (Math.sqrt(x * x + y * y) < 30) {
+        //            links.push({source: node, target: target});
+        //        }
+        //    });
+        //
+        //    restart();
+        //}
 
         function tick() {
             link.attr("x1", function (d) {
@@ -71,26 +157,37 @@ class ForceGraph {
                     return d.target.y;
                 });
 
-            node.attr("cx", function (d) {
-                    return d.x;
-                })
-                .attr("cy", function (d) {
-                    return d.y;
+            node.attr("transform", function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
                 });
         }
 
         function restart() {
             link = link.data(links);
 
-            link.enter().insert("line", ".node")
-                .attr("class", "link");
-
             node = node.data(nodes);
 
-            node.enter().insert("circle", ".cursor")
+            var group = node.enter().insert("g", ".cursor")
                 .attr("class", "node")
-                .attr("r", 5)
+                .attr("data-letter", (a)=>a.char)
                 .call(force.drag);
+
+            group.append('circle')
+                .attr("r", 15);
+            group.append('text')
+                .attr("class", "node-letter")
+                .attr("dx", -5)
+                .attr("dy", 5)
+
+                .text((a)=>a.char);
+
+            link.enter().insert("line", ".node")
+                .attr("class", "link")
+                .classed({
+                    link: true,
+                    vertical: (a)=>a.vertical == true
+                });
+
 
             force.start();
         }

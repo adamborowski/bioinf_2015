@@ -1,5 +1,35 @@
 force-graph {
 
+  @A: #a6186e;
+  @T: green;
+  @C: yellow;
+  @G: blue;
+
+  .bullet(@baseColor) {
+    circle {
+      fill: @baseColor;
+    }
+    .node-letter {
+      fill: contrast(@baseColor, #222, #ddd);
+    }
+  }
+
+  [data-letter="A"] {
+    .bullet(@A);
+  }
+
+  [data-letter="C"] {
+    .bullet(@C);
+  }
+
+  [data-letter="T"] {
+    .bullet(@T);
+  }
+  [data-letter="G"] {
+    .bullet(@G);
+  }
+
+
   display: block;
   svg {
     border: 1px dotted #cccccc;
@@ -13,7 +43,9 @@ force-graph {
   }
 
   .node {
-    fill: #000;
+    cursor: pointer;
+  }
+  .node-letter {
   }
 
   .cursor {
@@ -24,5 +56,11 @@ force-graph {
 
   .link {
     stroke: #999;
+    stroke-width: 2px;
+    &.vertical {
+      stroke-dasharray: 2;
+      stroke-dashoffset: 3;
+      stroke: #1c6e1c;
+    }
   }
 }

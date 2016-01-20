@@ -5,7 +5,14 @@
  *  @date    Jan 20, 2016
  *
  */
+
+
 export default class HomeController {
+    test() {
+
+
+
+    }
     constructor($scope, events, utils, HomeService, $alert) {
 
         $scope.$alert = $alert;
@@ -99,5 +106,8 @@ export default class HomeController {
 
         $scope.$on('$destroy', function () {
         });
+
+
+        this.test()
     };
 }
